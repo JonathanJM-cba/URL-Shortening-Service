@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { dbConnection } = require("./config/configDb");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
@@ -16,3 +17,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en localhost:${port}`);
 });
+
+dbConnection();
