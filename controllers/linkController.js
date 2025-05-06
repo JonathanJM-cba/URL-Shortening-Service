@@ -88,4 +88,38 @@ const deleteLink = async (req, res) => {
   }
 };
 
-module.exports = { createLink, updateLink, deleteLink };
+const getLinkByShortCode = async (req, res) => {
+  const { shortCode } = req.params;
+  try {
+    //Se verifica si existe el enlance
+    const link = await linkModel.findOne({
+      where: { shortedCode: shortCode },
+    });
+
+    if (!link) return handleHttpError(res, "ERROR_LINK_NOT_FOUND", 404);
+
+    //Caso contrario, se suma en uno el número de acceso a la ruta y luego se le redirige a l ruta original
+    await link.update({
+      accessCount: link.accessCount + 1,
+    });
+
+    //CASO 1: DEVOLVER UN JSON
+    res
+      .status(200)
+      .json({
+        id: link.id,
+        url: link.url,
+        shortCode: link.shortedCode,
+        createdAt: link.createdAt,
+        updatedAt: link.updatedAt,
+      });
+
+    //CASO 2: REDIRECCIONAR A LA URL ORIGINAL
+    //res.redirect(link.url);
+  } catch (error) {
+    console.log("Error al obtener el link original: ", error);
+    handleHttpError(res, "ERROR_GET_LINK_BY_SHORT_CODE", 500);
+  }
+};
+
+module.exports = { createLink, updateLink, deleteLink, getLinkByShortCode };
