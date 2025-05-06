@@ -68,4 +68,24 @@ const updateLink = async (req, res) => {
   }
 };
 
-module.exports = { createLink, updateLink };
+const deleteLink = async (req, res) => {
+  const { shortCode } = req.params;
+  try {
+    //Se verifica si existe el enlance
+    const link = await linkModel.findOne({
+      where: { shortedCode: shortCode },
+    });
+
+    if (!link) return handleHttpError(res, "ERROR_LINK_NOT_FOUND", 404);
+
+    //Caso contrario se elimina el link
+    await link.destroy();
+
+    res.status(204).json({ message: "Link eliminado con éxito" });
+  } catch (error) {
+    console.log("Error al intentar eliminar link: ", error);
+    handleHttpError(res, "ERROR_DELETE_LINK", 500);
+  }
+};
+
+module.exports = { createLink, updateLink, deleteLink };
