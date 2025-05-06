@@ -5,20 +5,22 @@ const Link = sequelize.define(
   "Link",
   {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
     url: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,
     },
     shortedCode: {
       type: DataTypes.STRING(20),
       allowNull: false,
+      unique: true,
     },
     accessCount: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
     },
