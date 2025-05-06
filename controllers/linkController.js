@@ -104,15 +104,13 @@ const getLinkByShortCode = async (req, res) => {
     });
 
     //CASO 1: DEVOLVER UN JSON
-    res
-      .status(200)
-      .json({
-        id: link.id,
-        url: link.url,
-        shortCode: link.shortedCode,
-        createdAt: link.createdAt,
-        updatedAt: link.updatedAt,
-      });
+    res.status(200).json({
+      id: link.id,
+      url: link.url,
+      shortCode: link.shortedCode,
+      createdAt: link.createdAt,
+      updatedAt: link.updatedAt,
+    });
 
     //CASO 2: REDIRECCIONAR A LA URL ORIGINAL
     //res.redirect(link.url);
@@ -122,4 +120,26 @@ const getLinkByShortCode = async (req, res) => {
   }
 };
 
-module.exports = { createLink, updateLink, deleteLink, getLinkByShortCode };
+const getLinkWithStatistics = async (req, res) => {
+  const { shortCode } = req.params;
+  try {
+    const link = await linkModel.findOne({
+      where: { shortedCode: shortCode },
+    });
+
+    if (!link) return handleHttpError(res, "ERROR_LINK_NOT_FOUND", 404);
+
+    res.status(200).json(link);
+  } catch (error) {
+    console.log("Error al intentar obtener link con estadisticaa: ", error);
+    handleHttpError(res, "ERROR_GET_LINK_WITH_STATISTICS", 500);
+  }
+};
+
+module.exports = {
+  createLink,
+  updateLink,
+  deleteLink,
+  getLinkByShortCode,
+  getLinkWithStatistics,
+};
